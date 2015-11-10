@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,7 +23,7 @@ import java.util.jar.Manifest;
 
 public class BeaconMap extends FragmentActivity {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    protected GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,33 +31,9 @@ public class BeaconMap extends FragmentActivity {
         setContentView(R.layout.activity_beacon_map);
         setUpMapIfNeeded();
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        Location currentLocation = getMyLocation();
-        if(currentLocation!= null){
-            LatLng coords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coords, 10));
-            Log.i("locations worked", "Zoomed to current Location of " + coords.toString());
-        }
-        Log.i("locations ending", "Ending al;skdjflaksjfalk;dfjaskl");
     }
 
-    private Location getMyLocation(){
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location myLocation = null;
-        if(locationManager!=null) {
-            if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED) {
-                myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        }
-        if(myLocation== null){
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-            String provider = locationManager.getBestProvider(criteria, true);
-            myLocation = locationManager.getLastKnownLocation(provider);
 
-        }
-        return myLocation;
-    }
 
     @Override
     protected void onResume() {
@@ -91,6 +70,7 @@ public class BeaconMap extends FragmentActivity {
         }
     }
 
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
@@ -98,6 +78,5 @@ public class BeaconMap extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 }
