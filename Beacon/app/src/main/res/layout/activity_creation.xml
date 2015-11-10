@@ -32,6 +32,5 @@
         android:id="@+id/beacon_creator"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/BeaconName"
-        android:layout_marginEnd="120dp"
-        android:onClick="CreateBeacon" />
+        android:layout_marginEnd="120dp" />
 </RelativeLayout>

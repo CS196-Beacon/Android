@@ -2,16 +2,17 @@ package tb.beacon;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.parse.ParseObject;
 
@@ -23,12 +24,26 @@ public class CreationActivity extends Activity implements GoogleApiClient.Connec
 
     private TextView locationText;
     private EditText beaconName;
+    private Button createBeaconButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation);
         locationText = (TextView)findViewById(R.id.Long_Lat);
         beaconName = (EditText)findViewById(R.id.BeaconName);
+        createBeaconButton = (Button)findViewById(R.id.beacon_creator);
+        createBeaconButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseObject beaconObject = new ParseObject("Beacon");
+                beaconObject.put("Latitude", mLastLocation.getLatitude());
+                beaconObject.put("Longitude", mLastLocation.getLongitude());
+                beaconObject.put("BeaconName", beaconName.getText().toString());
+                beaconObject.saveInBackground();
+                Intent intent = new Intent(v.getContext(), BeaconMap.class);
+                startActivity(intent);
+            }
+        });
         buildGoogleApiClient();
     }
 
@@ -73,12 +88,4 @@ public class CreationActivity extends Activity implements GoogleApiClient.Connec
         mGoogleApiClient.connect();
     }
 
-
-    public void CreateBeacon(View view){
-        ParseObject beaconObject = new ParseObject("BeaconObject");
-        beaconObject.put("Latitude", "" + mLastLocation.getLatitude());
-        beaconObject.put("Longitude", "" + mLastLocation.getLongitude());
-        beaconObject.put("Beacon Name",beaconName.getText().toString());
-        beaconObject.saveInBackground();
-    }
 }

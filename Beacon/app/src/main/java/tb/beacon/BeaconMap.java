@@ -18,7 +18,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
+import java.util.List;
 import java.util.jar.Manifest;
 
 public class BeaconMap extends FragmentActivity {
@@ -78,5 +83,16 @@ public class BeaconMap extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        ParseQuery query = ParseQuery.getQuery("Beacon");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e==null){
+                    for(ParseObject objs : objects){
+                        mMap.addMarker(new MarkerOptions().position(new LatLng((double)objs.get("Latitude"), (double)objs.get("Longitude"))).title((String)objs.get("BeaconName")));
+                    }
+                }
+            }
+        });
     }
 }
