@@ -23,13 +23,14 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.Date;
 import java.util.List;
 import java.util.jar.Manifest;
 
 public class BeaconMap extends FragmentActivity {
 
     protected GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
+    private final String TAG = "BeaconMap";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,22 +77,22 @@ public class BeaconMap extends FragmentActivity {
     }
 
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
-        ParseQuery query = ParseQuery.getQuery("Beacon");
+        ParseQuery query = ParseQuery.getQuery(VARS.P_OBJ_NAME);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if(e==null){
-                    for(ParseObject objs : objects){
-                        mMap.addMarker(new MarkerOptions().position(new LatLng((double)objs.get("Latitude"), (double)objs.get("Longitude"))).title((String)objs.get("BeaconName")));
+                if (e == null) {
+                    if (objects.size() > 0){
+                        Log.d(TAG,"This is the size of the object " + objects.size());
                     }
+                    for (ParseObject objs : objects) {
+                        mMap.addMarker(new MarkerOptions().position(new LatLng((double) objs.get(VARS.DB_B_LAT), (double) objs.get(VARS.DB_B_LONG))).title((String) objs.get(VARS.DB_B_NAME)));
+                    }
+                    Log.d(TAG, "No error");
                 }
+                else
+                    Log.d(TAG,"ERROR!!!");
             }
         });
     }

@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.parse.ParseObject;
+
+import java.util.Date;
 
 
 public class CreationActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -23,23 +26,39 @@ public class CreationActivity extends Activity implements GoogleApiClient.Connec
     protected Location mLastLocation;
 
     private TextView locationText;
-    private EditText beaconName;
-    private Button createBeaconButton;
+    private EditText beaconName, minutes;
+    private Button createBeaconButton, mapButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation);
+
         locationText = (TextView)findViewById(R.id.Long_Lat);
         beaconName = (EditText)findViewById(R.id.BeaconName);
+        minutes = (EditText)findViewById(R.id.num_minutes);
+
         createBeaconButton = (Button)findViewById(R.id.beacon_creator);
         createBeaconButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseObject beaconObject = new ParseObject("Beacon");
-                beaconObject.put("Latitude", mLastLocation.getLatitude());
-                beaconObject.put("Longitude", mLastLocation.getLongitude());
-                beaconObject.put("BeaconName", beaconName.getText().toString());
-                beaconObject.saveInBackground();
+                if(valuesAreValid()) {
+                    Date date = new Date();
+                    ParseObject beaconObject = new ParseObject(VARS.P_OBJ_NAME);
+                    beaconObject.put(VARS.DB_B_LAT, mLastLocation.getLatitude());
+                    beaconObject.put(VARS.DB_B_LONG, mLastLocation.getLongitude());
+                    beaconObject.put(VARS.DB_B_NAME, beaconName.getText().toString());
+                    beaconObject.saveInBackground();
+                    Intent intent = new Intent(v.getContext(), BeaconMap.class);
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(v.getContext(),"Please enter valid values", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mapButton = (Button)findViewById(R.id.maps_button);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), BeaconMap.class);
                 startActivity(intent);
             }
@@ -86,6 +105,16 @@ public class CreationActivity extends Activity implements GoogleApiClient.Connec
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection Suspended");
         mGoogleApiClient.connect();
+    }
+
+    public boolean valuesAreValid(){
+        if(minutes.getText() == null || beaconName.getText() == null)
+            return false;
+        if(beaconName.getText().toString().length() == 0 || ((int)Integer.parseInt(minutes.getText().toString())<0||(int)Integer.parseInt(minutes.getText().toString())>300) ) {
+            Log.d(TAG, "Ended because values are invalid." + " " + minutes.getText().toString() + " " + beaconName.getText().toString());
+            return false;
+        }
+        return true;
     }
 
 }
