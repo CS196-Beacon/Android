@@ -68,6 +68,7 @@ public class BeaconMap extends FragmentActivity {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            Log.d(TAG, "mMap created");
             mMap.setMyLocationEnabled(true);
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
@@ -82,17 +83,26 @@ public class BeaconMap extends FragmentActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
+                Log.d(TAG, "Finished finding in background");
                 if (e == null) {
                     if (objects.size() > 0){
                         Log.d(TAG,"This is the size of the object " + objects.size());
                     }
                     for (ParseObject objs : objects) {
-                        mMap.addMarker(new MarkerOptions().position(new LatLng((double) objs.get(VARS.DB_B_LAT), (double) objs.get(VARS.DB_B_LONG))).title((String) objs.get(VARS.DB_B_NAME)));
+                        Date currentDate = new Date();
+                        long timeDiff = currentDate.getTime() - ((Date) objs.getCreatedAt()).getTime();
+                        timeDiff /= (1000 * 60);
+                        Log.d(TAG, "This is the time difference" + timeDiff);
+                        if(timeDiff < Integer.parseInt((String) objs.get(VARS.DB_B_DURATION)))
+                            mMap.addMarker(new MarkerOptions().position(new LatLng((double) objs.get(VARS.DB_B_LAT), (double) objs.get(VARS.DB_B_LONG))).title((String) objs.get(VARS.DB_B_NAME)));
                     }
                     Log.d(TAG, "No error");
                 }
-                else
-                    Log.d(TAG,"ERROR!!!");
+                else {
+                    Log.d(TAG, "ERROR!!!");
+                    Log.e(TAG, e.getStackTrace().toString());
+                    Log.e(TAG, e.getMessage());
+                }
             }
         });
     }

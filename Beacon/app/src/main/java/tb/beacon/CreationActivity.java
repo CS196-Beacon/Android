@@ -47,6 +47,7 @@ public class CreationActivity extends Activity implements GoogleApiClient.Connec
                     beaconObject.put(VARS.DB_B_LAT, mLastLocation.getLatitude());
                     beaconObject.put(VARS.DB_B_LONG, mLastLocation.getLongitude());
                     beaconObject.put(VARS.DB_B_NAME, beaconName.getText().toString());
+                    beaconObject.put(VARS.DB_B_DURATION, minutes.getText().toString());
                     beaconObject.saveInBackground();
                     Intent intent = new Intent(v.getContext(), BeaconMap.class);
                     startActivity(intent);
