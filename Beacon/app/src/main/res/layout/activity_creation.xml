@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="tb.beacon.CreationActivity">
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Long_Lat"
+        android:text="Latitude:  Longitude:  "/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/creation_label"
+        android:layout_marginTop="50px"
+        android:textSize="50px"
+        android:id="@+id/creation_label" />
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BeaconName"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/creation_label"
+        android:layout_alignParentStart="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minutes: "
+        android:textSize="50px"
+        android:id="@+id/minutes_label"
+        android:layout_below="@id/BeaconName"
+        android:layout_marginTop="30px"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/minutes_label"
+        android:layout_below="@id/BeaconName"
+        android:layout_marginTop="30px"
+        android:inputType="number"
+        android:text="10"
+        android:textSize="50px"
+        android:ems="3"
+        android:id="@+id/num_minutes"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Beacon"
+        android:id="@+id/beacon_creator"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_above="@id/beacon_creator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/maps_button"
+        android:text="Go To Maps"
+        android:layout_centerHorizontal="true"/>
+
+
+</RelativeLayout>
